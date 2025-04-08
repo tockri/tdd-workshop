@@ -1,0 +1,45 @@
+# Java ビルドディレクトリを無視
+/build/
+out/
+target/
+
+# IDE設定ファイルを無視
+.idea/*
+# ただし以下を共有する
+!.idea/*.iml
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/workspace.xml
+!.idea/libraries/
+
+# IntelliJ IDEA で生成される一時ファイルやキャッシュを無視
+*.iws
+*.idea_modules/
+*.ipr
+
+# Mavenの不要なファイルを無視
+.mvn/
+log/
+*.log
+
+# Gradleの不要なファイルを無視
+.gradle/
+!gradle/wrapper/gradle-wrapper.properties
+
+# OS固有のファイルを無視
+.DS_Store
+Thumbs.db
+
+# Gitが生成するファイルを無視
+*.swp
+*.swo
+*~
+*.orig
+
+# テスト結果を無視
+/test-output/
+
+# 基本的な環境設定ファイルを無視
+.env
+.env.local
