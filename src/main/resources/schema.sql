@@ -1,3 +1,5 @@
+SET MODE MYSQL;
+
 -- Scheduleテーブル
 CREATE TABLE schedule (
     id INT AUTO_INCREMENT PRIMARY KEY,

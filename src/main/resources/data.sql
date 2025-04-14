@@ -1,3 +1,5 @@
+SET MODE MYSQL;
+
 INSERT INTO schedule (title, description, start_time, end_time)
 VALUES
     ('ミーティング', 'プロジェクトの進捗状況を共有するための会議', '2023-11-01 10:00:00', '2023-11-01 11:00:00'),
