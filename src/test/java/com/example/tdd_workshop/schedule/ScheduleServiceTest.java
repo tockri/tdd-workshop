@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+@DisplayName("ScheduleServiceの")
 public class ScheduleServiceTest {
     private static final LocalDateTime dt1_2_3_4 = LocalDateTime.of(2025, 1, 2, 3, 4);
     private static final LocalDateTime dt1_2_5_6 = LocalDateTime.of(2025, 1, 2, 5, 6);
@@ -26,6 +27,7 @@ public class ScheduleServiceTest {
 
     @Nested
     @ExtendWith(MockitoExtension.class)
+    @DisplayName("getAllSchedulesメソッドは")
     class GetAllSchedulesTest {
         @Mock
         private ScheduleRepository scheduleRepository;
