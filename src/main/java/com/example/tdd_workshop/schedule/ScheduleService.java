@@ -1,5 +1,6 @@
 package com.example.tdd_workshop.schedule;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,13 +9,10 @@ import java.util.stream.StreamSupport;
 
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-
-    public ScheduleService(ScheduleRepository scheduleRepository) {
-        this.scheduleRepository = scheduleRepository;
-    }
 
     public List<Schedule> getAllSchedules() {
         var all = scheduleRepository.findAll();
@@ -24,6 +22,19 @@ public class ScheduleService {
 
     public Optional<Schedule> getScheduleById(Long id) {
         return scheduleRepository.findById(id).map(ScheduleService::toModel);
+    }
+
+    public Schedule createSchedule(ScheduleInput input) {
+        var dao = scheduleRepository.save(toDao(null, input));
+        return toModel(dao);
+    }
+
+    public void updateSchedule(Long id, ScheduleInput input) {
+        scheduleRepository.save(toDao(id, input));
+    }
+
+    public void deleteSchedule(Long id) {
+        scheduleRepository.deleteById(id);
     }
 
     static Schedule toModel(ScheduleDao dao) {
@@ -36,13 +47,13 @@ public class ScheduleService {
         );
     }
 
-    static ScheduleDao toDao(Schedule schedule) {
+    static ScheduleDao toDao(Long id, ScheduleInput input) {
         return new ScheduleDao(
-                schedule.getId(),
-                schedule.getTitle(),
-                schedule.getDescription(),
-                schedule.getStartTime(),
-                schedule.getEndTime()
+                id,
+                input.title(),
+                input.description(),
+                input.startTime(),
+                input.endTime()
         );
     }
 }
