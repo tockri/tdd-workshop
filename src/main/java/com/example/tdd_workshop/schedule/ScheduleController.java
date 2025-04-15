@@ -1,14 +1,14 @@
 package com.example.tdd_workshop.schedule;
 
+import com.example.tdd_workshop.schedule.schema.Schedule;
+import com.example.tdd_workshop.schedule.schema.ScheduleCreateInput;
+import com.example.tdd_workshop.schedule.schema.ScheduleUpdateInput;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,18 +20,58 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
 
-    @GetMapping("")
+    @Operation(
+            summary = "スケジュール一覧の取得",
+            description = "設定されているスケジュールをすべて返します。"
+    )
+    @GetMapping(path = "", produces = "application/json")
     public ResponseEntity<List<Schedule>> getSchedules() {
         var schedules = scheduleService.getAllSchedules();
         return ResponseEntity.ok(schedules);
     }
 
-    @GetMapping("/{id}")
+
+    @Operation(
+            summary = "スケジュールの取得",
+            description = "指定したIDのスケジュールを返します。"
+    )
+    @GetMapping(path = "/{id}", produces = "application/json")
     public Schedule getScheduleById(@Validated @PathVariable Long id) {
-        var found = scheduleService.getScheduleById(id);
-        if (found.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "schedule %d not found".formatted(id));
-        }
-        return found.get();
+        return scheduleService.getScheduleById(id);
     }
+
+
+    @Operation(
+            summary = "スケジュールの作成",
+            description = "新しいスケジュールを作成します。"
+    )
+    @PostMapping(path = "", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Schedule> createSchedule(@Validated @RequestBody ScheduleCreateInput input) {
+        var created = scheduleService.createSchedule(input);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+
+    @Operation(
+            summary = "スケジュールの更新",
+            description = "指定したIDのスケジュールを更新します。"
+    )
+    @PatchMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Void> updateSchedule(@Validated @PathVariable Long id,
+                                               @Validated @RequestBody ScheduleUpdateInput input) {
+        scheduleService.updateSchedule(id, input);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(
+            summary = "スケジュールの削除",
+            description = "指定したIDのスケジュールを削除します。"
+    )
+    @DeleteMapping(path = "/{id}", produces = "application/json")
+    public ResponseEntity<Void> deleteSchedule(@Validated @PathVariable Long id) {
+        scheduleService.deleteSchedule(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="bootRun+watch" type="CompoundRunConfigurationType">
+    <toRun name="tdd-workshop [bootRun]" type="GradleRunConfiguration" />
+    <toRun name="tdd-workshop [classes]" type="GradleRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

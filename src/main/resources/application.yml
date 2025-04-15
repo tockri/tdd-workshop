@@ -21,4 +21,8 @@ spring:
       enabled: true
 hibernate:
   globally_quoted_identifiers: true
-
+springdoc:
+  swagger-ui:
+    path: swagger-ui.html
+  api-docs:
+    path: /docs/api-docs
