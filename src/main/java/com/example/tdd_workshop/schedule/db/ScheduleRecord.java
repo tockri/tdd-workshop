@@ -19,10 +19,10 @@ public record ScheduleRecord(
         @NonNull
         String description,
         @NonNull
-        @Column("start_time")
+        @Column("START_TIME")
         LocalDateTime startTime,
         @NonNull
-        @Column("end_time")
+        @Column("END_TIME")
         LocalDateTime endTime
 ) {
 }
