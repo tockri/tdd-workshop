@@ -6,6 +6,7 @@ import com.example.tdd_workshop.schedule.schema.Schedule;
 import com.example.tdd_workshop.schedule.schema.ScheduleCreateInput;
 import com.example.tdd_workshop.schedule.schema.ScheduleUpdateInput;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +34,7 @@ public class ScheduleService {
     }
 
     public Schedule createSchedule(ScheduleCreateInput input) {
-        var record = scheduleRepository.save(toInsertRecord(input));
-        return toSchema(record);
+        throw new NotImplementedException("Not implemented yet.");
     }
 
     @Transactional
@@ -62,18 +62,8 @@ public class ScheduleService {
                 dao.id(),
                 dao.title(),
                 dao.description(),
-                dao.startTime(),
-                dao.endTime()
-        );
-    }
-
-    private static ScheduleRecord toInsertRecord(ScheduleCreateInput input) {
-        return new ScheduleRecord(
-                null,
-                input.title(),
-                input.description(),
-                input.startTime(),
-                input.endTime()
+                dao.endTime(),
+                dao.startTime()
         );
     }
 
