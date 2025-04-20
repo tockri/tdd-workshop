@@ -100,11 +100,13 @@ public class ScheduleServiceTest {
             // Arrange
             when(scheduleRepository.findById(1L)).thenReturn(Optional.empty());
 
-            // Act & Assert
+            // Act
             var exception = assertThrows(
                     ResponseStatusException.class,
                     () -> scheduleService.getScheduleById(1L)
             );
+
+            // Assert
             assertEquals("404 NOT_FOUND \"schedule 1 is not found.\"", exception.getMessage());
         }
     }
