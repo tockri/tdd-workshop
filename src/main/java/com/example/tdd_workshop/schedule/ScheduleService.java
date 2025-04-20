@@ -62,8 +62,8 @@ public class ScheduleService {
                 dao.id(),
                 dao.title(),
                 dao.description(),
-                dao.endTime(),
-                dao.startTime()
+                dao.startTime(),
+                dao.endTime()
         );
     }
 
