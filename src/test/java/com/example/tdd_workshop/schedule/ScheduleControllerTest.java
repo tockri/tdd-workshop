@@ -141,7 +141,7 @@ public class ScheduleControllerTest {
 
         @Test
         @DisplayName("リクエストボディからScheduleCreateInputを生成し、Serviceに渡す")
-        void willCallService() {
+        void callsService() {
             // Arrange
             when(scheduleService.createSchedule(any())).thenReturn(GARBAGE_SCHEDULE);
 
@@ -170,7 +170,7 @@ public class ScheduleControllerTest {
 
         @Test
         @DisplayName("ServiceがScheduleを返したらJSON形式で返す")
-        void willReturnCreatedSchedule() {
+        void returnsCreatedSchedule() {
             // Arrange
             var schedule = new Schedule(1L, "title1", "desc1", LocalDateTime.of(2025, 1, 2, 3, 4), LocalDateTime.of(2025, 1, 2, 5, 6));
             when(scheduleService.createSchedule(any())).thenReturn(schedule);
@@ -234,7 +234,7 @@ public class ScheduleControllerTest {
         @ParameterizedTest
         @DisplayName("リクエストボディが不正な場合400を返す")
         @MethodSource("badRequestBodies")
-        void willReturnBadRequest(String requestBody) {
+        void returnsBadRequest(String requestBody) {
             // Act
             var response = mvcTester.post().uri("/schedules")
                     .contentType("application/json")
@@ -257,7 +257,7 @@ public class ScheduleControllerTest {
         /**
          * willCallServiceのバリエーション
          */
-        private static Stream<Param> willCallServiceArgsSource() {
+        private static Stream<Param> callsServiceArgsSource() {
             return Stream.of(
                     new Param("""
                             {
@@ -304,9 +304,10 @@ public class ScheduleControllerTest {
 
         @ParameterizedTest
         @DisplayName("リクエストボディからScheduleUpdateInputを生成し、Serviceに渡す")
-        @MethodSource("willCallServiceArgsSource")
-        void willCallService(Param param) {
+        @MethodSource("callsServiceArgsSource")
+        void callsService(Param param) {
             // Arrange
+            clearInvocations(scheduleService);
             doNothing().when(scheduleService).updateSchedule(any(), any());
 
             // Act
@@ -323,8 +324,9 @@ public class ScheduleControllerTest {
 
         @Test
         @DisplayName("Service#updateScheduleが成功したら204を返す")
-        void willSuccess() {
+        void returns204OnSuccess() {
             // Arrange
+            clearInvocations(scheduleService);
             doNothing().when(scheduleService).updateSchedule(any(), any());
 
             // Act
@@ -332,7 +334,7 @@ public class ScheduleControllerTest {
                     .contentType("application/json")
                     .content("""
                             {
-                              "title": "title1",
+                              "title": "title1"
                             }
                             """)
                     .accept("application/json")
@@ -340,13 +342,21 @@ public class ScheduleControllerTest {
                     .getResponse();
 
             // Assert
-            verify(scheduleService, times(1)).updateSchedule(any(), any());
+            verify(scheduleService, times(1)).updateSchedule(
+                    eq(1L),
+                    eq(new ScheduleUpdateInput(
+                            Optional.of("title1"),
+                            Optional.empty(),
+                            Optional.empty(),
+                            Optional.empty()
+                    ))
+            );
             assertEquals(204, response.getStatus());
         }
 
         @Test
         @DisplayName("リクエストボディが不正な場合400を返す")
-        void willReturnBadRequest() {
+        void returnsBadRequest() {
             // Act
             var response = mvcTester.patch().uri("/schedules/1")
                     .contentType("application/json")
@@ -365,7 +375,7 @@ public class ScheduleControllerTest {
 
         @Test
         @DisplayName("idが数値以外の場合400を返す")
-        void willReturnBadRequestForInvalidId() {
+        void returnsBadRequestForInvalidId() {
             // Act
             var response = mvcTester.patch().uri("/schedules/abc")
                     .contentType("application/json")

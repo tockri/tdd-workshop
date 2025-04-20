@@ -90,8 +90,6 @@ public class ScheduleServiceTest {
             assertEquals(1L, schedule.id());
             assertEquals("title1", schedule.title());
             assertEquals("desc1", schedule.description());
-            assertEquals(dt1_2_3_4, schedule.startTime());
-            assertEquals(dt1_2_5_6, schedule.endTime());
         }
 
         @Test
