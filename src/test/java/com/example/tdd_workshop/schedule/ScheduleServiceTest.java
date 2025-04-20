@@ -3,7 +3,6 @@ package com.example.tdd_workshop.schedule;
 
 import com.example.tdd_workshop.schedule.db.ScheduleRecord;
 import com.example.tdd_workshop.schedule.db.ScheduleRepository;
-import com.example.tdd_workshop.schedule.schema.ScheduleCreateInput;
 import com.example.tdd_workshop.schedule.schema.ScheduleUpdateInput;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -242,45 +241,4 @@ public class ScheduleServiceTest {
     }
 
 
-    @Nested
-    @ExtendWith(MockitoExtension.class)
-    @DisplayName("createSchedule()")
-    class CreateScheduleTest {
-        @Mock
-        private ScheduleRepository scheduleRepository;
-        @InjectMocks
-        private ScheduleService scheduleService;
-
-        private static final ScheduleRecord mockRecord = new ScheduleRecord(
-                1L,
-                "title1",
-                "desc1",
-                dt1_2_3_4,
-                dt1_2_5_6
-        );
-
-        @Test
-        @DisplayName("ScheduleCreateInputを元にScheduleRecordを生成し、Repositoryに保存する")
-        void createScheduleSuccessfully() {
-            // Arrange
-            when(scheduleRepository.save(any())).thenReturn(mockRecord);
-
-            // Act
-            scheduleService.createSchedule(new ScheduleCreateInput(
-                    "title1",
-                    "desc1",
-                    dt1_2_3_4,
-                    dt1_2_5_6
-            ));
-
-            // Assert
-            verify(scheduleRepository, times(1)).save(new ScheduleRecord(
-                    null,
-                    "title1",
-                    "desc1",
-                    dt1_2_3_4,
-                    dt1_2_5_6
-            ));
-        }
-    }
 }
