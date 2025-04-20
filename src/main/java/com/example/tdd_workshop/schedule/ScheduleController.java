@@ -4,6 +4,7 @@ import com.example.tdd_workshop.schedule.schema.Schedule;
 import com.example.tdd_workshop.schedule.schema.ScheduleCreateInput;
 import com.example.tdd_workshop.schedule.schema.ScheduleUpdateInput;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,13 @@ public class ScheduleController {
 
     @Operation(
             summary = "スケジュールの作成",
-            description = "新しいスケジュールを作成します。"
+            description = "新しいスケジュールを作成します。",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "スケジュールの作成に成功した場合"
+                    )
+            }
     )
     @PostMapping(path = "", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Schedule> createSchedule(@Validated @RequestBody ScheduleCreateInput input) {
@@ -54,7 +61,17 @@ public class ScheduleController {
 
     @Operation(
             summary = "スケジュールの更新",
-            description = "指定したIDのスケジュールを更新します。"
+            description = "指定したIDのスケジュールを更新します。",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "スケジュールの更新に成功した場合"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "指定したIDのスケジュールが存在しない場合"
+                    )
+            }
     )
     @PatchMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Void> updateSchedule(@Validated @PathVariable Long id,
@@ -66,7 +83,17 @@ public class ScheduleController {
 
     @Operation(
             summary = "スケジュールの削除",
-            description = "指定したIDのスケジュールを削除します。"
+            description = "指定したIDのスケジュールを削除します。",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "スケジュールの削除に成功した場合"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "指定したIDのスケジュールが存在しない場合"
+                    )
+            }
     )
     @DeleteMapping(path = "/{id}", produces = "application/json")
     public ResponseEntity<Void> deleteSchedule(@Validated @PathVariable Long id) {
