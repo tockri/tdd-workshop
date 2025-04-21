@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -115,11 +116,15 @@ public class ScheduleControllerTest {
             assertEquals(404, response.getStatus());
         }
 
-        @Test
+        @ParameterizedTest
         @DisplayName("idが数値以外の場合400を返す")
-        void willReturnBadRequest() {
+        @ValueSource(strings = {"abc", "1.5", "1a", "1-2", "-1"})
+        void willReturnBadRequest(String id) {
             // Act
-            var response = mvcTester.get().uri("/schedules/abc").accept("application/json").exchange().getResponse();
+            var response = mvcTester.get().uri("/schedules/" + id)
+                    .accept("application/json")
+                    .exchange()
+                    .getResponse();
 
             // Assert
             assertEquals(400, response.getStatus());
@@ -298,6 +303,14 @@ public class ScheduleControllerTest {
                                     Optional.empty(),
                                     Optional.of(LocalDateTime.of(2025, 1, 2, 5, 6))
                             )
+                    ),
+                    new Param("{}",
+                            new ScheduleUpdateInput(
+                                    Optional.empty(),
+                                    Optional.empty(),
+                                    Optional.empty(),
+                                    Optional.empty()
+                            )
                     )
             );
         }
@@ -354,17 +367,40 @@ public class ScheduleControllerTest {
             assertEquals(204, response.getStatus());
         }
 
-        @Test
+        private static Stream<String> badRequestBodies() {
+            return Stream.of(
+                    """
+                            {
+                              "title": "title1",
+                              "description": "desc1",
+                              "startTime": "2025-01-02T03:04:00",
+                              "endTime": "2025-01"
+                            }
+                            """,
+                    """
+                            {
+                              "description": "desc1",
+                              "startTime": "2025-01-02T03:04:00",
+                              "endTime": "not a date"
+                            }
+                            """,
+                    """
+                            {
+                              "title": "",
+                              "startTime": "not a date",
+                              "endTime": "2025-01-02T05:06:00"
+                            }
+                            """);
+        }
+
+        @ParameterizedTest
         @DisplayName("リクエストボディが不正な場合400を返す")
-        void returnsBadRequest() {
+        @MethodSource("badRequestBodies")
+        void returnsBadRequestOnInvalidBody(String requestBody) {
             // Act
             var response = mvcTester.patch().uri("/schedules/1")
                     .contentType("application/json")
-                    .content("""
-                            {
-                              "startTime": "not a date"
-                            }
-                            """)
+                    .content(requestBody)
                     .accept("application/json")
                     .exchange()
                     .getResponse();
@@ -373,11 +409,13 @@ public class ScheduleControllerTest {
             assertEquals(400, response.getStatus());
         }
 
-        @Test
-        @DisplayName("idが数値以外の場合400を返す")
-        void returnsBadRequestForInvalidId() {
+
+        @ParameterizedTest
+        @DisplayName("idが不正な場合400を返す")
+        @ValueSource(strings = {"abc", "1.5", "1a", "1-2", "-1"})
+        void returnsBadRequestForInvalidId(String id) {
             // Act
-            var response = mvcTester.patch().uri("/schedules/abc")
+            var response = mvcTester.patch().uri("/schedules/" + id)
                     .contentType("application/json")
                     .content("""
                             {

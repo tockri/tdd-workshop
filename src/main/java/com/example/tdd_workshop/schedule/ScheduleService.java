@@ -20,6 +20,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional(readOnly = true)
     public List<Schedule> getAllSchedules() {
         return scheduleRepository.findAll()
                 .stream()
@@ -27,11 +28,13 @@ public class ScheduleService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public Schedule getScheduleById(Long id) {
         var record = findRecord(id);
         return toSchema(record);
     }
 
+    @Transactional
     public Schedule createSchedule(ScheduleCreateInput input) {
         var record = scheduleRepository.save(toInsertRecord(input));
         return toSchema(record);
