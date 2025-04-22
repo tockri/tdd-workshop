@@ -5,6 +5,8 @@ import com.example.tdd_workshop.schedule.schema.ScheduleCreateInput;
 import com.example.tdd_workshop.schedule.schema.ScheduleUpdateInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,7 @@ public class ScheduleController {
             description = "指定したIDのスケジュールを返します。"
     )
     @GetMapping(path = "/{id}", produces = "application/json")
-    public Schedule getScheduleById(@Validated @PathVariable Long id) {
+    public Schedule getScheduleById(@Validated @PathVariable @Min(1) Long id) {
         return scheduleService.getScheduleById(id);
     }
 
@@ -74,7 +76,7 @@ public class ScheduleController {
             }
     )
     @PatchMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Void> updateSchedule(@Validated @PathVariable Long id,
+    public ResponseEntity<Void> updateSchedule(@Validated @PathVariable @Min(1) Long id,
                                                @Validated @RequestBody ScheduleUpdateInput input) {
         scheduleService.updateSchedule(id, input);
         return ResponseEntity.noContent().build();
@@ -96,9 +98,14 @@ public class ScheduleController {
             }
     )
     @DeleteMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<Void> deleteSchedule(@Validated @PathVariable Long id) {
+    public ResponseEntity<Void> deleteSchedule(@Validated @PathVariable @Min(1) Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();
     }
 
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handle(ConstraintViolationException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }
